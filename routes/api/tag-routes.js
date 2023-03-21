@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const { Tag, Product, ProductTag } = require('../../models');
+const { Tag, Product, ProductTag } = require('../../models')
 
 // The `/api/tags` endpoint
 
@@ -12,7 +12,7 @@ router.get('/', async (req, res) => {
         attributes: ['product_name', 'price', 'stock', 'category_id']
       }
     })
-    res.json(200).json(getTag)
+    res.status(200).json(getTag)
   }catch(err){
     res.status(500).json(err)
   }
@@ -23,7 +23,7 @@ router.get('/:id', async (req, res) => {
   try {
     const getTagId = await Tag.findOne({
       where: {
-        id: req.params
+        id: req.params.id
       },
       include: {
         model: Product,
@@ -34,9 +34,9 @@ router.get('/:id', async (req, res) => {
       res.status(404).json({ message: 'No tag associated with that id.'})
       return
     }
-    res.json(200).json(getTagId)
+    res.status(200).json(getTagId)
   }catch(err){
-    res.json(500).json(err)
+    res.status(500).json(err)
   }
 });
 
@@ -55,13 +55,13 @@ router.post('/', async (req, res) => {
 router.put('/:id', async (req, res) => {
   // update a tag's name by its `id` value
   try {
-    const putTag = await Tag.update({
+    const putTag = await Tag.update( req.body, {
       where: {
         id: req.params.id
       }
     })
     if(!putTag){
-      res.status(400).json({ message: 'No tag associated with this id.'})
+      res.status(404).json({ message: 'No tag associated with this id.'})
       return
     } res.status(200).json(putTag)
   }catch(err){
@@ -78,7 +78,7 @@ router.delete('/:id', async (req, res) => {
       }
     })
     if (!deleteTag){
-      res.status(400).json({ message: 'No tag associated with this id.'})
+      res.status(404).json({ message: 'No tag associated with this id.'})
       return
     } res.status(200).json(deleteTag)
   }catch(err){
@@ -86,4 +86,4 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
-module.exports = router;
+module.exports = router
